@@ -32,8 +32,8 @@ $(document).on("click", "p", function() {
       // A button to submit a new note, with the id of the article saved to it
       $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
       // A button to submit a new note, with the id of the article saved to it
-      $("#notes").append("<button data-id='" + data._id + "' id='delnote'>Delete Note</button>");
-
+      $("#notes").append("<button data-id='" + data.note._id + "' id='delnote'>Delete Note</button>");
+      console.log( data.note);
       // If there's a note in the article
       if (data.note) {
         // Place the title of the note in the title input
@@ -84,9 +84,9 @@ $(document).on("click", "#delnote", function() {
     url: "/delete/" + thisId,
     data: {
       // Value taken from title input
-      title: $("#titleinput").val(),
+     // title: $("#titleinput").val(),
       // Value taken from note textarea
-      body: $("#bodyinput").val()
+      //body: $("#bodyinput").val()
     }
   })
     // With that done
