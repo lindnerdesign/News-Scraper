@@ -123,6 +123,7 @@ app.post("/articles/:id", function(req, res) {
       return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
     })
     .then(function(dbArticle) {
+      console.log("Updated")
       // If we were able to successfully update an Article, send it back to the client
       res.json(dbArticle);
     })
@@ -132,7 +133,28 @@ app.post("/articles/:id", function(req, res) {
     });
 });
 
+// Delete Note ==========================================
+app.get("/delete/:id", function(req, res) {
+  // Remove a note using the objectID
+  db.Note.findByIdAndRemove({_id: req.params.id},
+    function(error, removed) {
+      // Log any errors from mongojs
+      if (error) {
+        console.log(error);
+        res.send(error);
+      }
+      else {
+        // Otherwise, send the mongojs response to the browser
+        // This will fire off the success function of the ajax request
+        console.log(removed);
+        res.send(removed);
+      }
+    }
+  );
+});
+
 // Start the server
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");
 });
+
