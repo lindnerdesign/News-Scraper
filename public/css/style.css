@@ -1,0 +1,73 @@
+body {
+    background-color: #343a40;
+}
+
+a:link {
+    color: goldenrod;
+}
+
+a:hover {
+    color: limegreen;
+}
+
+a:visited {
+    color:#088f54;
+}
+
+.card-title {
+    color: #088f54;
+}
+
+.modal-header {
+    color: #088f54;
+}
+
+.modal-content {
+    margin: 5px;
+}
+
+.form-control {
+    margin: 0 0 10px 0;
+}
+
+#notemod {
+    color:#178e56;
+}
+
+.scroll-box {
+    overflow-y: scroll;
+    height: 200px;
+    padding: 1rem
+}
+
+#delnote {
+    margin-right: 5px;
+}
+
+#savenote, #delnote {
+    float: right;
+}
+
+.more-info {
+    float: right;
+}
+
+.jumbotron {
+    background-image: url("/images/banner.jpg");
+    color: #ffffff;
+    font-family: 'Fjalla One', sans-serif;
+}
+
+#github, #portfolio {
+    color: #ffffff;
+}
+
+#footer {
+    background-color: #088f54;
+    color:white;
+    bottom: 0px;
+    width: 100%;
+    position: relative;
+    padding: 25px 0 5px 0;
+    margin-top: 0px;
+}

@@ -2,24 +2,32 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
-
-var PORT = 3000;
-
-// Initialize Express
+var exphbs = require("express-handlebars");
 var app = express();
+
+var PORT = process.env.PORT || 3000;
 
 app.use(logger("dev"));
 // Use body-parser for handling form submissions
 app.use(bodyParser.urlencoded({ extended: true }));
-// Use express.static to serve the public folder as a static directory
+
+// Serve static content for the app from the "public" directory in the application directory.
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/news-scraper");
-// var MONGODB_URI = process.env.MONGODB_URI || mongoose.connect("mongodb://localhost/mnews-scraper");
+mongoose.Promise = Promise;
 
-// mongoose.Promise = Promise;
-// mongoose.connect(MONGODB_URI);
+var databaseUri = "mongodb://localhost/onionpeeler";
+if (process.env.MONGODB_URI){
+  databaseUri = process.env.MONGODB_URI;
+}
+mongoose.connect(databaseUri, {
+  useMongoClient: true
+});
+
+// Handlebars
+app.engine("handlebars", exphbs({defaultLayout: "main"}));
+app.set("view engine", "handlebars");
 
 // Configure routes
 require("./controllers/controller.js")(app);

@@ -4,30 +4,20 @@ let mongoose = require('mongoose'); // MongoDB ORM
 let db = require("../models"); // Require all models
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/mediumDB");
+mongoose.connect("mongodb://localhost/onionpeeler");
 
 // Exports
 module.exports = (app) => {
-  // Routes
-  // add all your routes here....
 
-
-
-
-// A GET route for scraping the echoJS website
+ // Web Scrape ==========================================
 app.get("/scrape", function(req, res) {
-    // First, we grab the body of the html with request
     axios.get("https://www.theonion.com/").then(function(response) {
       // Then, we load that into cheerio and save it to $ for a shorthand selector
       var $ = cheerio.load(response.data);
   
-      // Now, we grab every h2 within an article tag, and do the following:
-      $("h1.headline").each(function(i, element) {
-        // Save an empty result object
         var result = {};
-  
-        // // Add the text and href of every link, and save them as properties of the result object
-        // $("h1.headline").each(function(i, element) {
+
+        $("h1.headline").each(function(i, element) {
         
           result.title = $(this)
             .children()
@@ -43,7 +33,7 @@ app.get("/scrape", function(req, res) {
             .children("div.excerpt")
             .children()
             .text();
-    
+
         // Create a new Article using the `result` object built from scraping
         db.Article.create(result)
           .then(function(dbArticle) {
@@ -57,17 +47,19 @@ app.get("/scrape", function(req, res) {
       });
   
       // If we were able to successfully scrape and save an Article, send a message to the client
-      res.send("Scrape Complete");
+      // res.send("Scraped");
+      res.render("index",{Article:dbArticle});
     });
   });
-  
-  // Route for getting all Articles from the db
-  app.get("/articles", function(req, res) {
+
+
+   // Grab All Articles from DB ==========================================
+  app.get("/", function(req, res) {
     // Grab every document in the Articles collection
     db.Article.find({})
       .then(function(dbArticle) {
         // If we were able to successfully find Articles, send them back to the client
-        res.json(dbArticle);
+        res.render("index",{Article:dbArticle});
       })
       .catch(function(err) {
         // If an error occurred, send it to the client
@@ -75,7 +67,7 @@ app.get("/scrape", function(req, res) {
       });
   });
   
-  // Route for grabbing a specific Article by id, populate it with it's note
+  // Grab Specific Article with Note ==========================================
   app.get("/articles/:id", function(req, res) {
     // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
     db.Article.findOne({ _id: req.params.id })
@@ -91,14 +83,29 @@ app.get("/scrape", function(req, res) {
       });
   });
   
-  // Route for saving/updating an Article's associated Note
+ // Save/Update Note ==========================================
   app.post("/articles/:id", function(req, res) {
     // Create a new note and pass the req.body to the entry
     db.Note.create(req.body)
       .then(function(dbNote) {
-        // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
-        // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-        // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      })
+      .then(function(dbArticle) {
+        console.log("Updated")
+        // If we were able to successfully update an Article, send it back to the client
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        // If an error occurred, send it to the client
+        res.json(err);
+      });
+  });
+
+ // Save/Update Article ==========================================
+  app.post("/articles/:id", function(req, res) {
+    // Create a new note and pass the req.body to the entry
+    db.Article.create(req.body)
+      .then(function(dbNote) {
         return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
       })
       .then(function(dbArticle) {
@@ -123,12 +130,30 @@ app.get("/scrape", function(req, res) {
           res.send(error);
         }
         else {
-          // Otherwise, send the mongojs response to the browser
-          // This will fire off the success function of the ajax request
           console.log(removed);
           res.send(removed);
         }
       }
     );
   });
+
+   // Delete Article ==========================================
+   app.get("/delete/:id", function(req, res) {
+    // Remove a note using the objectID
+    db.Article.findByIdAndRemove({_id: req.params.id},
+      function(error, removed) {
+        // Log any errors from mongojs
+        if (error) {
+          console.log(error);
+          res.send(error);
+        }
+        else {
+          console.log(removed);
+          res.send(removed);
+        }
+      }
+    );
+  });
+
 }
+
