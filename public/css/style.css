@@ -7,7 +7,7 @@ a:link {
 }
 
 a:hover {
-    color: limegreen;
+    color:  #343a40;
 }
 
 a:visited {
@@ -29,9 +29,16 @@ a:visited {
 .form-control {
     margin: 0 0 10px 0;
 }
+#delArt {
+    size: 5px;
+}
 
 #notemod {
     color:#178e56;
+}
+
+.card-body {
+    color: #343a40;
 }
 
 .scroll-box {

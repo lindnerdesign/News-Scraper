@@ -1,27 +1,10 @@
 $(document).ready(function(){
 
-  $("#peeler").on("submit", function() {
-  $.ajax({
-    method: "GET",
-    url: "/scrape"
-  })
-  .then( function() {
-    $.ajax({
-      method: "GET",
-      url: "/"
-    })
-  })
-})
-
-// // Grab the articles as a json
-// $.getJSON("/articles", function(data) {
-//   // For each one
-//   for (var i = 0; i < data.length; i++) {
-//     // Display the apropos information on the page
-//     $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "<br />" + data[i].summary + "</p>");
-//   }
-// });
-
+$("#peeler").on("submit", function() {
+app.get('/scrape', function(req, res) {
+  res.redirect('/');
+ });
+});
 
 $(document).on("click", "#notemod", function() {
   // Empty the notes from the note section
@@ -42,7 +25,7 @@ $(document).on("click", "#notemod", function() {
       $("#notes").append("<textarea type='text' class='form-control' id='bodyinput' name='body'>");
       $("#notes").append("<button type='submit' class='btn btn-success' data-id='" + data._id + "' id='savenote'>Save</button>");
       $("#notes").append("<button type='submit' class='btn btn-danger' data-id='" + data.note._id + "' id='delnote'>X</button>");
-
+      // $("#articles").append("<button type='submit' class='btn btn-success articlesSave' data-id='" + data._id + "' id='saveArt'>Save</button>");  
       if (data.note) {
         // Place the title of the note in the title input
         $("#titleinput").val(data.note.title);
@@ -105,4 +88,22 @@ $(document).on("click", "#delnote", function() {
   $("#titleinput").val("");
   $("#bodyinput").val("");
 });
+
+// When you click the delnote button
+$(document).on("submit", "#delArt", function() {
+  // Grab the id associated with the article from the submit button
+  var thisId = $(this).attr("data-id");
+
+  // Run a GET request to change the note, using what's entered in the inputs
+  $.ajax({
+    type: "GET",
+    url: "/delete/" + thisId,
+  })
+    // With that done
+    .then(function(data) {
+      // Log the response
+      console.log(data);
+      // Empty the notes section
+    });
+  });
 });
