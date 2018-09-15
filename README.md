@@ -7,9 +7,11 @@ Web app that lets users view and leave comments on the latest news. Mongoose and
 
 ![The Onion Screen](public/images/screenshot.png)
 
+![The Onion Screen](public/images/screenshot2.png)
+
 [Video Demo](https://drive.google.com/file/d/1hXNQQc-l4fGjoi0sN_QdK2-lfD_9YwJu/view)
 
-[Deployed Project](#)
+[Deployed Project](https://news-scraper-36.herokuapp.com/)
 
 ## Tools ##
 
