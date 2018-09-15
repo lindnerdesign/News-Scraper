@@ -9,6 +9,10 @@ mongoose.connect("mongodb://localhost/onionpeeler");
 // Exports
 module.exports = (app) => {
 
+app.post("/scrape", function(req,res){
+res.redirect("/")
+})
+
  // Web Scrape ==========================================
 app.get("/scrape", function(req, res) {
     axios.get("https://www.theonion.com/").then(function(response) {
@@ -38,10 +42,11 @@ app.get("/scrape", function(req, res) {
         db.Article.create(result)
           .then(function(dbArticle) {
             // View the added result in the console
-            console.log(dbArticle);
+            res.json(dbArticle);
           })
           .catch(function(err) {
             // If an error occurred, send it to the client
+            //console.log(err)
             return res.json(err);
           });
       });
@@ -82,6 +87,46 @@ app.get("/scrape", function(req, res) {
         res.json(err);
       });
   });
+
+
+app.post("/articles", function(req, res) {
+   axios.get("https://www.theonion.com/").then(function(response) {
+      // Then, we load that into cheerio and save it to $ for a shorthand selector
+      var $ = cheerio.load(response.data);
+  
+        var result = {};
+
+        $("h1.headline").each(function(i, element) {
+        
+          result.title = $(this)
+            .children()
+            .text();
+  
+          result.link = $(this)
+            .children()
+            .attr("href");
+  
+          result.summary = $(this)
+            .parent()
+            .next()
+            .children("div.excerpt")
+            .children()
+            .text();
+
+        // Create a new Article using the `result` object built from scraping
+        db.Article.create(result)
+          .then(function(dbArticle) {
+            // View the added result in the console
+            res.json(dbArticle);
+          })
+          .catch(function(err) {
+            // If an error occurred, send it to the client
+            //console.log(err)
+            return res.json(err);
+          });
+      });
+    });
+  });
   
  // Save/Update Note ==========================================
   app.post("/articles/:id", function(req, res) {
@@ -91,7 +136,7 @@ app.get("/scrape", function(req, res) {
         return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
       })
       .then(function(dbArticle) {
-        console.log("Updated")
+        console.log("Note has been updated")
         // If we were able to successfully update an Article, send it back to the client
         res.json(dbArticle);
       })
@@ -112,7 +157,7 @@ app.get("/scrape", function(req, res) {
           res.send(error);
         }
         else {
-          console.log(removed);
+          console.log(`Note has been ${removed}`);
           res.send(removed);
         }
       }
@@ -120,7 +165,7 @@ app.get("/scrape", function(req, res) {
   });
 
    // Delete Article ==========================================
-   app.get("/delete/:id", function(req, res) {
+   app.get("/deleteArticle/:id", function(req, res) {
     // Remove a note using the objectID
     db.Article.findByIdAndRemove({_id: req.params.id},
       function(error, removed) {
@@ -130,7 +175,7 @@ app.get("/scrape", function(req, res) {
           res.send(error);
         }
         else {
-          console.log(removed);
+          console.log(`Article has been ${removed}`);
           res.send(removed);
         }
       }

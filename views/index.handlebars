@@ -2,7 +2,7 @@
 		<div class="container">
 			<h1 class="display-4">THE ONION PEELER</h1>
 			<h4 class="lead">Web scraping so fun it will make you cry.</h4>
-			<a href="/scrape"><button class="btn-lg btn-success" id="peeler" type="submit">PEEL IT</button></a>
+			<button class="btn-lg btn-success" id="peeler" type="submit">PEEL IT</button>
 		</div>
 </div>
 
@@ -18,8 +18,8 @@
                 <h5 class="card-title" data-id={{this._id}}>{{this.title}}</h5>
                 <p class="card-text scroll-box">{{this.summary}}</p>
                 <a href="{{this.link}}" class="card-link">Read Full Article</a>
-                <i class="far fa-edit more-info" style="font-size: 1.5rem;" id="notemod" data-id= "{{this._id}}" data-title="{{this.title}}" data-toggle="modal" data-target="#noteModal"></i><br>
-                <button type="button" class="btn btn-outline-secondary btn-sm" id="delArt" data-id= "{{this._id}}">Delete</button>     
+                <i class="far fa-edit more-info" style="font-size: 1.5rem;" id="notemod" data-id="{{this._id}}" data-title="{{this.title}}" data-toggle="modal" data-target="#noteModal"></i><br>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="delArt" data-id="{{this._id}}" data-title="{{this.title}}">Delete</button>     
               </div>
             </div>
           {{/each}}

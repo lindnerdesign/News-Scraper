@@ -1,9 +1,14 @@
 $(document).ready(function(){
 
-$("#peeler").on("submit", function() {
-app.get('/scrape', function(req, res) {
-  res.redirect('/');
- });
+$("#peeler").on("click", function() {
+  event.preventDefault()
+  $.ajax({
+    method: "POST",
+    url: "/articles"
+  })
+  .then(function(res){
+    window.location.reload()
+  })
 });
 
 $(document).on("click", "#notemod", function() {
@@ -24,8 +29,8 @@ $(document).on("click", "#notemod", function() {
       $("#notes").append("<input type='text' class='form-control' id='titleinput' name='title'>");
       $("#notes").append("<textarea type='text' class='form-control' id='bodyinput' name='body'>");
       $("#notes").append("<button type='submit' class='btn btn-success' data-id='" + data._id + "' id='savenote'>Save</button>");
-      $("#notes").append("<button type='submit' class='btn btn-danger' data-id='" + data.note._id + "' id='delnote'>X</button>");
-      // $("#articles").append("<button type='submit' class='btn btn-success articlesSave' data-id='" + data._id + "' id='saveArt'>Save</button>");  
+      $("#notes").append("<button type='submit' class='btn btn-danger' data-id='" + data.note._id + "' id='delnote'>Delete</button>");
+        
       if (data.note) {
         // Place the title of the note in the title input
         $("#titleinput").val(data.note.title);
@@ -89,18 +94,19 @@ $(document).on("click", "#delnote", function() {
   $("#bodyinput").val("");
 });
 
-// When you click the delnote button
-$(document).on("submit", "#delArt", function() {
+// When you click the delArt button
+$(document).on("click", "#delArt", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
   // Run a GET request to change the note, using what's entered in the inputs
   $.ajax({
     type: "GET",
-    url: "/delete/" + thisId,
+    url: "/deleteArticle/" + thisId
   })
     // With that done
     .then(function(data) {
+      window.location.reload()
       // Log the response
       console.log(data);
       // Empty the notes section
